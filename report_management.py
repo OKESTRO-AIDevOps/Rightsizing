@@ -26,21 +26,19 @@ def fetch_and_store_data():
 
             df = pd.read_csv(pd.compat.StringIO(csv_data))
 
-            conn = mariadb.connect(
-                user=db_user,
-                password=db_password,
-                host=db_host,
-                port=db_port,
-                database=db_name
-            )
-            cursor = conn.cursor()
+            with mariadb.connect(
+                    user=db_user,
+                    password=db_password,
+                    host=db_host,
+                    port=db_port,
+                    database=db_name
+            ) as conn:
+                with conn.cursor() as cursor:
+                    for index, row in df.iterrows():
+                        sql = "query"
+                        cursor.execute(sql)
 
-            for index, row in df.iterrows():
-                sql = "query"
-                cursor.execute(sql)
-
-            conn.commit()
-            conn.close()
+                conn.commit()
 
             print(f"Data from {file} inserted into MariaDB.")
 
